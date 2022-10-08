@@ -44,7 +44,6 @@ class MlService(MlServiceServicer):
         path = request.path
 
         # data = load_data_by_role(role, path)
-        # на 6000 падает по памяти, а на 1000 работает. Нужно память оптимизировать или данные урезать
         data = pd.read_csv(path)#.iloc[:3000]
 
 
