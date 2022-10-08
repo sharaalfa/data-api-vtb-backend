@@ -119,7 +119,7 @@ class MlService(MlServiceServicer):
 
         # data = load_data_by_role(role, path)
         data = pd.read_csv(path)#.iloc[:3000]
-
+        data['date'] = data['date'].apply(get_datetime_format)
 
         #embedings = vectorize(list(data.main))
         encoded_input = self.tokenizer(list(data.main), padding=True, truncation=True, max_length=64, return_tensors='pt')
@@ -155,7 +155,7 @@ class MlService(MlServiceServicer):
     def Trend(self, request, context):
         
         data = pd.read_csv(request.path)#.iloc[:3000]
-
+        data['date'] = data['date'].apply(get_datetime_format)
 
         #embedings = vectorize(list(data.main))
         encoded_input = self.tokenizer(list(data.main), padding=True, truncation=True, max_length=64, return_tensors='pt')
