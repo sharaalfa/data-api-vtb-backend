@@ -8,7 +8,8 @@ from collections import Counter
 from datetime import datetime
 from  sklearn.feature_extraction.text import TfidfVectorizer
 from  sklearn.decomposition import LatentDirichletAllocation as LDA
-
+import numpy as np
+import re
 
 from ml_pb2 import *
 from ml_pb2_grpc import *
