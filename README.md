@@ -1,21 +1,21 @@
 #  Инструкция по работе с сервисом data-api-vtb-backend
 
-Цель закрепить порядок работы с сервисом на основе go, python, grpc и swagger codegen.
+Цель закрепить порядок работы с сервисом.
 
 ## Пошаговое руководство
 
-1. Запускаем сервис:
-```scala
-   sbt run
-```
-2. Загружаем image swagger-editor командой, если не установлено:
+1. Загружаем либы питона:
 ```bash
-   docker pull swaggerapi/swagger-editor
+   pip install -r py/requirements.txt
 ```
-3. Запускаем swagger-editor командой, например, на 85 порту и согласно текущей конфигурации адреса сервиса:
+2. Запускаем сервер на питоне:
 ```bash
-   docker run -d -p 85:8080 -e URL="http://localhost:8085/v1/swagger.json" swaggerapi/swagger-editor
+   python py/server.py
 ```
-4. Наблюдаем и пользуемся swagger-editor по адресу:
-   http://localhost:85
+3. Запускаем сервер на питоне:
+```bash
+   go run cmd/main.go
+```
+4. Наблюдаем и пользуемся api по адресу:
+   http://localhost:8080/sw/
   
