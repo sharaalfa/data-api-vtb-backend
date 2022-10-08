@@ -1,0 +1,9 @@
+type: google.api.service
+config_version: 3
+
+http:
+  rules:
+    - selector: api.v1.MlService.Digest
+      get: /api/v1/digest
+    - selector: api.v1.MlService.Trend
+      get: /api/vi/trend
