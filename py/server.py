@@ -10,6 +10,9 @@ from  sklearn.feature_extraction.text import TfidfVectorizer
 from  sklearn.decomposition import LatentDirichletAllocation as LDA
 import numpy as np
 import re
+from sklearn.metrics.pairwise import cosine_similarity
+
+
 
 from ml_pb2 import *
 from ml_pb2_grpc import *
@@ -195,6 +198,19 @@ class MlService(MlServiceServicer):
                     lda = get_trend_words(data, i[0])
                     trend = 'Trend: '+sorted(lda, key=len)[-1]
                     trends.append(trend)
+                    
+                    #find insight
+                    #векторизуем все бертом
+                    #ищем среди кластера с трендом самую не похожую новость на остальные через косинусную меру
+                    #считаем такое инсайтом
+                    cluster_trends = data.loc[data['cluster']==i[0]].index
+                    embedings_insight = embeddings[cluster_trends]
+                    
+                    cos_sims = cosine_similarity(embedings_insight,embedings_insight)
+                    metric_of_sim = [np.median(i) for i in cos_sims]
+                    texts = data.loc[data['cluster']==i[0]].main.values
+                    insight = 'Insight: '+texts[min(enumerate(metric_of_sim),key=lambda x: x[1])[0]]
+                    trends.append(insight)
                 if num_cl == 1:
                     break
         
