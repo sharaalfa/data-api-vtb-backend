@@ -66,11 +66,11 @@ def get_trend_words(d, cluster_id):
     
     #vectorize texts  заголовки !?
     count_vect = TfidfVectorizer(ngram_range=(2,4))
-    dataset = count_vect.fit_transform(d.loc[d['cluster']==cluster_id].text)
-    lda = LDA(n_components =10,doc_topic_prior=3,
+    dataset = count_vect.fit_transform(d.loc[d['cluster']==cluster_id].main_lemm)
+    lda = LDA(n_components =10,doc_topic_prior=2,
                  max_iter=20,
                  learning_method='batch',
-                 verbose=1)
+                 verbose=1,random_state=333)
     #lda.fit(dataset)
     #res = lda.transform(dataset)
 
@@ -109,26 +109,7 @@ class MlService(MlServiceServicer):
         self.model = AutoModel.from_pretrained("cointegrated/LaBSE-en-ru")
         print("init model")
 
-    # def vectorize(self, texts):
-    #
-    #     encoded_input = self.tokenizer(texts, padding=True, truncation=True, max_length=64, return_tensors='pt')
-    #     with torch.no_grad():
-    #         model_output = self.model(**encoded_input)
-    #     embeddings = model_output.pooler_output
-    #     embeddings = torch.nn.functional.normalize(embeddings)
-    #     return embeddings
-    #
-    # def clusterize(self, embeddings):
-    #
-    #     cluster = hdbscan.HDBSCAN(min_cluster_size=3,
-    #                       metric='euclidean',
-    #                       cluster_selection_method='eom').fit(embeddings)
-    #     return cluster
-    #
-    # def load_data_by_role(self, role, path):
-    #     #return pandas DataFrame
-    #     data = pd.read_csv(path)
-    #     return data
+    
 
     def Digest(self, request, context):
         role = request.role
@@ -160,7 +141,7 @@ class MlService(MlServiceServicer):
                 cl_dt = (data.loc[data['cluster']==i[0]].date)
                 max_dt = sorted([ i for i in cl_dt if type(i)!=float])[-1]
                 news.append((data.loc[(data['cluster']==i[0])&(data['date']==max_dt),['main','text']]))
-            if num_cl == 2:
+            if num_cl == 2:### сколько новостей выводим TODO вынести в параметры
                 break
         news = get_main_sentence_from_cluster(news)
 
@@ -192,7 +173,7 @@ class MlService(MlServiceServicer):
         trends = []
         for i in clusters:
             if i[0]!=-1:
-                a,b = (analize_time_intervals(data, i[0]))
+                a,b = (analize_time_intervals(data, I[0]))#проверяем по интервальному признаку на тренд
                 if a:
                     num_cl+=1
                     lda = get_trend_words(data, i[0])
@@ -211,7 +192,7 @@ class MlService(MlServiceServicer):
                     texts = data.loc[data['cluster']==i[0]].main.values
                     insight = 'Insight: '+texts[min(enumerate(metric_of_sim),key=lambda x: x[1])[0]]
                     trends.append(insight)
-                if num_cl == 1:
+                if num_cl == 1:### сколько трендов выводим TODO вынести в параметры
                     break
         
         response = DigestResponse()
