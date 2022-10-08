@@ -7,12 +7,13 @@
 1. Загружаем либы питона:
 ```bash
    pip install -r py/requirements.txt
+   pip install -r py/requirements_ml.txt
 ```
 2. Запускаем сервер на питоне:
 ```bash
    python py/server.py
 ```
-3. Запускаем сервер на питоне:
+3. Запускаем сервер на go:
 ```bash
    go run cmd/main.go
 ```
