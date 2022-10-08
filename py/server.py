@@ -154,7 +154,7 @@ class MlService(MlServiceServicer):
 
     def Trend(self, request, context):
         
-        data = pd.read_csv(path)#.iloc[:3000]
+        data = pd.read_csv(request.path)#.iloc[:3000]
 
 
         #embedings = vectorize(list(data.main))
