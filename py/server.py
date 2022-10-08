@@ -46,7 +46,7 @@ def analize_time_intervals(d, cluster_id, date_of_trend=datetime(2022, 10, 1)):
     #считаем среднее время между новостями, если есть периодичность(в среднем каждую неделю и меньше есть новость)
     # и кластер большой то считаем что есть тренд
     
-    cl_dt = list(d.loc[d['labels']==cluster_id].date)
+    cl_dt = list(d.loc[d['cluster']==cluster_id].date)
     cl_dt = sorted([ i for i in cl_dt if type(i)!=float])
 
     mean_time_delta = np.mean(([(cl_dt[i]-cl_dt[i-1]).days if i>0 else 0 for i,j in enumerate(cl_dt)]))
@@ -62,7 +62,7 @@ def get_trend_words(d, cluster_id):
     
     #vectorize texts  заголовки !?
     count_vect = TfidfVectorizer(ngram_range=(2,4))
-    dataset = count_vect.fit_transform(d.loc[d['labels']==cluster_id].text)
+    dataset = count_vect.fit_transform(d.loc[d['cluster']==cluster_id].text)
     lda = LDA(n_components =10,doc_topic_prior=3,
                  max_iter=20,
                  learning_method='batch',
@@ -83,6 +83,19 @@ def get_trend_words(d, cluster_id):
         top_terms_key=sorted(zipped, key = lambda t: t[1], reverse=True)[:7]
         top_terms_list=list(dict(top_terms_key).keys())
     return top_terms_list
+
+def text_clean_func(text):
+    """
+    функция очистки текста
+    
+    """
+    
+    text = re.sub(r"\xa0", "", text)
+    text = re.sub(r"\r", "", text)
+    text = re.sub(r"\n", "", text)
+    text = re.sub(r"\t", " ", text)
+
+    return text
 
 class MlService(MlServiceServicer):
 
