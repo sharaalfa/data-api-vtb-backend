@@ -27,7 +27,7 @@ def get_main_sentence_from_cluster(news):
     
     res = []
     for new in news:
-        header = new['header'].values[0]+'.'
+        header = new['main'].values[0]+'.'
         sentences = text_clean_func(new['text'].values[0]).split('.')
         #embeddings_cluster = vectorize(sentences)
         
@@ -142,7 +142,7 @@ class MlService(MlServiceServicer):
                 num_cl+=1
                 cl_dt = (data.loc[data['cluster']==i[0]].date)
                 max_dt = sorted([ i for i in cl_dt if type(i)!=float])[-1]
-                news.append((data.loc[(data['cluster']==i[0])&(data['date']==max_dt),['header','text']]))
+                news.append((data.loc[(data['cluster']==i[0])&(data['date']==max_dt),['main','text']]))
             if num_cl == 2:
                 break
         news = get_main_sentence_from_cluster(news)
