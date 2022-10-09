@@ -173,7 +173,7 @@ class MlService(MlServiceServicer):
         trends = []
         for i in clusters:
             if i[0]!=-1:
-                a,b = (analize_time_intervals(data, I[0]))#проверяем по интервальному признаку на тренд
+                a,b = (analize_time_intervals(data, i[0]))#проверяем по интервальному признаку на тренд
                 if a:
                     num_cl+=1
                     lda = get_trend_words(data, i[0])
